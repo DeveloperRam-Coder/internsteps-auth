@@ -3,26 +3,29 @@
     "name": "InternSteps Auth",
     "slug": "internsteps-auth",
     "version": "1.0.0",
-    "platforms": [
-      "ios",
-      "android",
-      "web"
-    ],
+    "platforms": ["ios", "android", "web"],
     "orientation": "portrait",
+
     "icon": "./assets/placeholder.png",
+
     "splash": {
       "image": "./assets/placeholder.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "updates": {
-      "fallbackToCacheTimeout": 0
-    },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+
+    "assetBundlePatterns": ["**/*"],
+
     "ios": {
       "supportsTablet": true
+    },
+
+    "android": {
+      "package": "com.internsteps.auth",
+      "permissions": [
+        "INTERNET"
+      ],
+      "usesCleartextTraffic": true
     }
   }
 }
