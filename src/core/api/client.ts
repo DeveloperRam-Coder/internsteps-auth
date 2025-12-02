@@ -5,7 +5,7 @@ import { Platform } from 'react-native';
 // Base URL depending on platform
 const API_BASE_URL =
   Platform.OS === 'web'
-    ? 'http://localhost:8081/api' // web runs on localhost
+    ? 'http://localhost:3000/api' // web runs on localhost
     : 'http://192.168.31.156:3000/api'; // Android/iOS device/emulator
 
 const api = axios.create({

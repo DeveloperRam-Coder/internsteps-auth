@@ -1,12 +1,75 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet, TouchableOpacityProps } from 'react-native';
+import { TouchableOpacity, Text, StyleSheet, TouchableOpacityProps, ActivityIndicator, View } from 'react-native';
+import { Colors, Typography, Spacing, BorderRadius, Shadows } from '../theme/theme';
 
-type Props = TouchableOpacityProps & { title: string };
+type Variant = 'primary' | 'secondary' | 'outline' | 'ghost';
+type Size = 'sm' | 'md' | 'lg';
 
-const Button = ({ title, ...props }: Props) => {
+type Props = TouchableOpacityProps & {
+  title: string;
+  variant?: Variant;
+  size?: Size;
+  loading?: boolean;
+  icon?: React.ReactNode;
+  fullWidth?: boolean;
+};
+
+const Button = ({
+  title,
+  variant = 'primary',
+  size = 'md',
+  loading = false,
+  icon,
+  fullWidth = true,
+  disabled,
+  ...props
+}: Props) => {
+  const getSize = () => {
+    switch (size) {
+      case 'sm':
+        return { padding: Spacing.md, fontSize: Typography.bodySmall };
+      case 'lg':
+        return { padding: Spacing.xl, fontSize: Typography.h6 };
+      default:
+        return { padding: Spacing.lg, fontSize: Typography.body };
+    }
+  };
+
+  const sizeStyle = getSize();
+  const isDisabled = disabled || loading;
+
   return (
-    <TouchableOpacity style={styles.btn} {...props}>
-      <Text style={styles.text}>{title}</Text>
+    <TouchableOpacity
+      style={[
+        styles.button,
+        styles[variant],
+        sizeStyle,
+        fullWidth && styles.fullWidth,
+        isDisabled && styles.disabled,
+      ]}
+      disabled={isDisabled}
+      activeOpacity={0.85}
+      {...props}
+    >
+      {loading ? (
+        <ActivityIndicator
+          size="small"
+          color={variant === 'primary' ? Colors.text : Colors.primary}
+        />
+      ) : (
+        <View style={styles.content}>
+          {icon && <View style={styles.icon}>{icon}</View>}
+          <Text
+            style={[
+              styles.text,
+              styles[`text_${variant}`],
+              isDisabled && styles.textDisabled,
+            ]}
+          >
+            {title}
+          </Text>
+        </View>
+      )}
     </TouchableOpacity>
   );
 };
@@ -14,15 +77,59 @@ const Button = ({ title, ...props }: Props) => {
 export default Button;
 
 const styles = StyleSheet.create({
-  btn: {
-    backgroundColor: '#0B6EFD',
-    padding: 14,
-    borderRadius: 8,
-    marginVertical: 10,
+  button: {
+    borderRadius: BorderRadius.lg,
+    marginVertical: Spacing.sm,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  fullWidth: {
+    width: '100%',
+  },
+  content: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  icon: {
+    marginRight: Spacing.sm,
+  },
+  primary: {
+    backgroundColor: Colors.primary,
+    ...Shadows.md,
+  },
+  secondary: {
+    backgroundColor: Colors.accent,
+  },
+  outline: {
+    backgroundColor: 'transparent',
+    borderWidth: 2,
+    borderColor: Colors.primary,
+  },
+  ghost: {
+    backgroundColor: 'transparent',
+  },
+  disabled: {
+    opacity: 0.5,
   },
   text: {
-    color: '#fff',
+    fontWeight: Typography.semibold as any,
     textAlign: 'center',
-    fontSize: 16,
+  },
+  text_primary: {
+    color: Colors.text,
+  },
+  text_secondary: {
+    color: Colors.background,
+  },
+  text_outline: {
+    color: Colors.primary,
+  },
+  text_ghost: {
+    color: Colors.primary,
+  },
+  textDisabled: {
+    opacity: 0.6,
   },
 });
