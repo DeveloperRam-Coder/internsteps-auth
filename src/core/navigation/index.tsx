@@ -7,6 +7,9 @@ import RegisterScreen from '../../modules/auth/screens/RegisterScreen';
 import ProfileScreen from '../../modules/auth/screens/ProfileScreen';
 import SplashScreen from '../../modules/auth/screens/SplashScreen';
 import OnboardingScreen from '../../modules/auth/screens/OnboardingScreen';
+import BusinessDetailsScreen from '../../modules/auth/screens/BusinessDetailsScreen';
+import AddCustomerScreen from '../../modules/auth/screens/AddCustomerScreen';
+import AddSubCustomerScreen from '../../modules/auth/screens/AddSubCustomerScreen';
 import AdminDashboard from '../../modules/admin/AdminDashboard';
 import InstructorDashboard from '../../modules/instructor/InstructorDashboard';
 import UserDashboard from '../../modules/user/UserDashboard';
@@ -17,7 +20,7 @@ const Stack = createNativeStackNavigator();
 export default function RootNavigator() {
   const auth = useContext(AuthContext);
   if (!auth) throw new Error('AuthContext missing');
-  const { user, loading } = auth;
+  const { user, loading, hasBusinessDetails } = auth;
 
   if (loading) return <SplashScreen />;
 
@@ -40,36 +43,82 @@ export default function RootNavigator() {
       >
         {user ? (
           <>
-            {/* Role-based dashboards */}
-            {user.role === 'admin' && (
-              <Stack.Screen 
-                name="AdminDashboard" 
-                component={AdminDashboard}
-                options={{
-                  title: 'Admin Dashboard',
-                  headerTitleAlign: 'left',
-                }}
-              />
-            )}
-            {user.role === 'instructor' && (
-              <Stack.Screen 
-                name="InstructorDashboard" 
-                component={InstructorDashboard}
-                options={{
-                  title: 'Teaching Dashboard',
-                  headerTitleAlign: 'left',
-                }}
-              />
-            )}
-            {(!user.role || user.role === 'user') && (
-              <Stack.Screen 
-                name="UserDashboard" 
-                component={UserDashboard}
-                options={{
-                  title: 'My Dashboard',
-                  headerTitleAlign: 'left',
-                }}
-              />
+            {/* Business Details Flow - Show if no business details exist */}
+            {!hasBusinessDetails ? (
+              <>
+                <Stack.Screen 
+                  name="BusinessDetails" 
+                  component={BusinessDetailsScreen}
+                  options={{
+                    title: 'Business Details',
+                    headerTitleAlign: 'center',
+                    headerBackVisible: false,
+                  }}
+                />
+                <Stack.Screen 
+                  name="AddCustomer" 
+                  component={AddCustomerScreen}
+                  options={{
+                    title: 'Add Customer',
+                    headerTitleAlign: 'center',
+                    headerBackVisible: false,
+                  }}
+                />
+              </>
+            ) : (
+              <>
+                {/* Role-based dashboards - Show when business details exist */}
+                {user.role === 'admin' && (
+                  <Stack.Screen 
+                    name="AdminDashboard" 
+                    component={AdminDashboard}
+                    options={{
+                      title: 'Admin Dashboard',
+                      headerTitleAlign: 'left',
+                    }}
+                  />
+                )}
+                {user.role === 'instructor' && (
+                  <Stack.Screen 
+                    name="InstructorDashboard" 
+                    component={InstructorDashboard}
+                    options={{
+                      title: 'Teaching Dashboard',
+                      headerTitleAlign: 'left',
+                    }}
+                  />
+                )}
+                {(!user.role || user.role === 'user') && (
+                  <Stack.Screen 
+                    name="UserDashboard" 
+                    component={UserDashboard}
+                    options={{
+                      title: 'My Dashboard',
+                      headerTitleAlign: 'left',
+                    }}
+                  />
+                )}
+                
+                {/* Add Customer screen - accessible from dashboard */}
+                <Stack.Screen 
+                  name="AddCustomer" 
+                  component={AddCustomerScreen}
+                  options={{
+                    title: 'Add Customer',
+                    headerTitleAlign: 'center',
+                  }}
+                />
+
+                {/* Add SubCustomer screen - accessible from dashboard */}
+                <Stack.Screen 
+                  name="AddSubCustomerScreen" 
+                  component={AddSubCustomerScreen}
+                  options={{
+                    title: 'Add Sub-Customer',
+                    headerTitleAlign: 'center',
+                  }}
+                />
+              </>
             )}
             
             {/* Profile screen accessible to all authenticated users */}
@@ -113,4 +162,3 @@ export default function RootNavigator() {
     </NavigationContainer>
   );
 }
-

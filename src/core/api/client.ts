@@ -14,15 +14,56 @@ const api = axios.create({
   timeout: 15000,
 });
 
-// Attach token from SecureStore
-api.interceptors.request.use(async (config) => {
+// Helper to get token from secure storage (platform-aware)
+async function getToken() {
   try {
-    const token = await SecureStore.getItemAsync('access_token');
-    if (token && config.headers) config.headers.Authorization = `Bearer ${token}`;
+    if (Platform.OS === 'web') {
+      // On web, use localStorage
+      return localStorage.getItem('access_token');
+    } else {
+      // On native platforms, use SecureStore
+      return await SecureStore.getItemAsync('access_token');
+    }
   } catch (e) {
-    // ignore
+    console.error('Error retrieving token:', e);
+    return null;
+  }
+}
+
+// Helper to set token in secure storage (platform-aware)
+async function setToken(token: string) {
+  try {
+    if (Platform.OS === 'web') {
+      localStorage.setItem('access_token', token);
+    } else {
+      await SecureStore.setItemAsync('access_token', token);
+    }
+  } catch (e) {
+    console.error('Error storing token:', e);
+  }
+}
+
+// Helper to remove token from secure storage (platform-aware)
+async function removeToken() {
+  try {
+    if (Platform.OS === 'web') {
+      localStorage.removeItem('access_token');
+    } else {
+      await SecureStore.deleteItemAsync('access_token');
+    }
+  } catch (e) {
+    console.error('Error removing token:', e);
+  }
+}
+
+// Attach token to all requests
+api.interceptors.request.use(async (config) => {
+  const token = await getToken();
+  if (token && config.headers) {
+    config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
 });
 
 export default api;
+export { getToken, setToken, removeToken };

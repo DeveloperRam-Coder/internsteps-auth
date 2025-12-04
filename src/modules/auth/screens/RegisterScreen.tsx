@@ -110,15 +110,6 @@ export default function RegisterScreen({ navigation }: any) {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        {/* Header */}
-        <View style={styles.header}>
-          <Text style={styles.title}>
-            Create Account
-          </Text>
-          <Text style={styles.subtitle}>
-            Join our community today
-          </Text>
-        </View>
 
         {/* Form Container */}
         <View style={styles.formContainer}>

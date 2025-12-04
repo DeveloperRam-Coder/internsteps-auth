@@ -15,7 +15,7 @@ import Divider from '../../../core/components/Divider';
 import { AuthContext } from '../context/AuthContext';
 import { Colors, Typography, Spacing, BorderRadius, Shadows } from '../../../core/theme/theme';
 
-export default function ProfileScreen() {
+export default function ProfileScreen({ navigation }: any) {
   const auth = useContext(AuthContext);
   if (!auth) throw new Error('AuthContext missing');
   const { user, logout } = auth;
@@ -65,40 +65,8 @@ export default function ProfileScreen() {
       showsVerticalScrollIndicator={false}
       contentContainerStyle={styles.scrollContent}
     >
-      {/* Header Section */}
-      {/* <View style={styles.headerSection}>
-        <View style={styles.glowBackground} />
-        <View style={styles.profileHeader}>
-          <Text style={styles.userName}>{user?.name || 'User'}</Text>
-          <Badge
-            label={user?.role?.toUpperCase() || 'USER'}
-            variant={getRoleVariant(user?.role)}
-            size="md"
-          />
-        </View>
-      </View> */}
 
-      {/* Quick Stats */}
-      {/* <View style={styles.statsSection}>
-        <Card style={styles.statCard}>
-          <View style={styles.statContent}>
-            <Text style={styles.statIcon}>📧</Text>
-            <Text style={styles.statLabel}>Email</Text>
-            <Text style={styles.statValue} numberOfLines={1}>
-              {user?.email}
-            </Text>
-          </View>
-        </Card>
-        <Card style={styles.statCard}>
-          <View style={styles.statContent}>
-            <Text style={styles.statIcon}>📱</Text>
-            <Text style={styles.statLabel}>Mobile</Text>
-            <Text style={styles.statValue}>
-              {user?.mobile || 'Not provided'}
-            </Text>
-          </View>
-        </Card>
-      </View> */}
+
 
       {/* Account Information */}
       <Card title="Account Information">
@@ -208,7 +176,7 @@ export default function ProfileScreen() {
           title="Edit Profile"
           variant="outline"
           size="lg"
-          disabled
+        // disabled
         />
         <Button
           title="Sign Out"
@@ -234,6 +202,31 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingBottom: Spacing.xl3,
     paddingHorizontal: Spacing.lg,
+  },
+  headerActions: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingVertical: Spacing.lg,
+    marginBottom: Spacing.lg,
+    backgroundColor: Colors.surface,
+    borderRadius: BorderRadius.lg,
+    paddingHorizontal: Spacing.md,
+  },
+  iconButton: {
+    alignItems: 'center',
+    paddingVertical: Spacing.md,
+    paddingHorizontal: Spacing.lg,
+    flex: 1,
+  },
+  actionIcon: {
+    fontSize: 32,
+    marginBottom: Spacing.xs,
+  },
+  actionLabel: {
+    fontSize: 12,
+    fontWeight: Typography.semibold,
+    color: Colors.text,
+    textAlign: 'center',
   },
   topRight: {
     alignItems: 'flex-end',

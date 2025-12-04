@@ -1,13 +1,30 @@
 import * as SecureStore from 'expo-secure-store';
+import { Platform } from 'react-native';
 
-export const save = async (key: string, value: string): Promise<void> =>
-  SecureStore.setItemAsync(key, value);
+// Platform-aware storage helpers
+export const save = async (key: string, value: string): Promise<void> => {
+  if (Platform.OS === 'web') {
+    localStorage.setItem(key, value);
+  } else {
+    await SecureStore.setItemAsync(key, value);
+  }
+};
 
-export const get = async (key: string): Promise<string | null> =>
-  SecureStore.getItemAsync(key);
+export const get = async (key: string): Promise<string | null> => {
+  if (Platform.OS === 'web') {
+    return localStorage.getItem(key);
+  } else {
+    return await SecureStore.getItemAsync(key);
+  }
+};
 
-export const remove = async (key: string): Promise<void> =>
-  SecureStore.deleteItemAsync(key);
+export const remove = async (key: string): Promise<void> => {
+  if (Platform.OS === 'web') {
+    localStorage.removeItem(key);
+  } else {
+    await SecureStore.deleteItemAsync(key);
+  }
+};
 
 export const saveAuth = async (accessToken?: string, refreshToken?: string): Promise<void> => {
   if (accessToken) await save('access_token', accessToken);
